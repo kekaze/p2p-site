@@ -1,0 +1,58 @@
+﻿@page "/"
+@inject IHttpClientFactory ClientFactory
+
+<PageTitle>P2P System</PageTitle>
+
+<h1 class="py-3">Procurement Requests</h1>
+
+@if (purchaseRequests is null)
+{
+    <p><em>Loading...</em></p>
+}
+else if (string.IsNullOrEmpty(errorMessage) == false)
+{
+    <p><em>@errorMessage</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date Created</th>
+                <th>PR Number</th>
+                <th>Purpose</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var pr in purchaseRequests)
+            {
+                <tr>
+                    <td>@pr.CreatedAt</td>
+                    <td>@pr.PurchaseId</td>
+                    <td>@pr.Purpose</td>
+                    <td>@pr.Status</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    PurchaseRequest[]? purchaseRequests;
+    string? errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var client = ClientFactory.CreateClient("WebAPI");
+        try
+        {
+            purchaseRequests = await client.GetFromJsonAsync<PurchaseRequest[]>("/api/purchaserequests");
+            errorMessage = null;
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"There was an error getting the purchase requests: { ex.Message }";
+        }
+    }
+}
