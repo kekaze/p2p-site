@@ -1,5 +1,6 @@
 ﻿@page "/"
 @inject IHttpClientFactory ClientFactory
+@inject NavigationManager Navigation
 
 <PageTitle>P2P System</PageTitle>
 
@@ -22,6 +23,7 @@ else
                 <th>PR Number</th>
                 <th>Purpose</th>
                 <th>Status</th>
+                <th class="text-center">Action</th>
             </tr>
         </thead>
         <tbody>
@@ -32,7 +34,15 @@ else
                     <td>@pr.PurchaseId</td>
                     <td>@pr.Purpose</td>
                     <td>@pr.Status</td>
+                    <td>
+                        <div class="text-center">
+                            <NavLink href="@($"purchaserequest/{pr.PurchaseId}")">
+                                <i class="fa-solid fa-bars"></i>
+                            </NavLink>
+                        </div>
+                    </td>
                 </tr>
+
             }
         </tbody>
     </table>
@@ -55,4 +65,9 @@ else
             errorMessage = $"There was an error getting the purchase requests: { ex.Message }";
         }
     }
+
+    private void ShowPurchaseRequest() => Console.WriteLine("Clicked!");
+    // {
+        // Navigation.NavigateTo($"purchaserequest/{purchaseId}");
+    // }
 }
