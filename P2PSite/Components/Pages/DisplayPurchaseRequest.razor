@@ -1,8 +1,6 @@
 ﻿@page "/purchaserequest/{purchaseId:int}"
 @inject IHttpClientFactory ClientFactory
 
-<h3 class="py-3">DisplayPurchaseRequest</h3>
-
 @if (purchaseRequest is null)
 {
     <p><em>Loading...</em></p>
@@ -13,7 +11,53 @@ else if (string.IsNullOrEmpty(errorMessage) == false)
 }
 else
 {
-    @purchaseRequest
+
+    <h3 class="py-3">@purchaseRequest.PurchaseId</h3>
+
+    <label for="date_created">Date Create</label>
+    <input type="text" value="@purchaseRequest.CreatedAt" name="date_created" disabled />
+
+    <label for="company_id">Company ID</label>
+    <input type="text" value="@purchaseRequest.CompanyId" name="company_id" disabled />
+
+    <label for="company_name">Company Name</label>
+    <input type="text" value="@purchaseRequest.CompanyName" name="company_name" disabled />
+
+    <label for="pr_type">PR Type</label>
+    <input type="text" value="@purchaseRequest.Type" name="pr_type" disabled />
+
+    <label for="pr_status">Status</label>
+    <input type="text" value="@purchaseRequest.Status" name="pr_status" disabled />
+
+    <label for="purpose">Purpose</label>
+    <textarea type="text" value="@purchaseRequest.Purpose" name="purpose" style="resize: none" disabled></textarea>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Material Code</th>
+                <th>Material Name</th>
+                <th>Quantity</th>
+                <th class="text-center">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var material in purchaseRequest.Materials)
+            {
+                <tr>
+                    <td>@material.MaterialCode</td>
+                    <td>@material.MaterialName</td>
+                    <td>@material.Quantity</td>
+                    <td>
+                        <div type="button" class="text-center">
+                            <i class="fa-solid fa-bars"></i>
+                        </div>
+                    </td>
+                </tr>
+
+            }
+        </tbody>
+    </table>
 }
 
 @code {
