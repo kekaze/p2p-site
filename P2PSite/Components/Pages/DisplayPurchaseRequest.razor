@@ -1,8 +1,39 @@
 ﻿@page "/purchaserequest/{purchaseId:int}"
+@inject IHttpClientFactory ClientFactory
 
-<h3>DisplayPurchaseRequest</h3>
+<h3 class="py-3">DisplayPurchaseRequest</h3>
+
+@if (purchaseRequest is null)
+{
+    <p><em>Loading...</em></p>
+}
+else if (string.IsNullOrEmpty(errorMessage) == false)
+{
+    <p><em>@errorMessage</em></p>
+}
+else
+{
+    @purchaseRequest
+}
 
 @code {
     [Parameter]
     public int purchaseId { get; set; }
+
+    OnePurchaseRequest? purchaseRequest;
+    string? errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var client = ClientFactory.CreateClient("WebAPI");
+        try
+        {
+            purchaseRequest = await client.GetFromJsonAsync<OnePurchaseRequest>($"/api/purchaserequests/{purchaseId}");
+            errorMessage = null;
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"There was an error getting the purchase requests: {ex.Message}";
+        }
+    }
 }
