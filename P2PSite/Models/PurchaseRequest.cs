@@ -1,4 +1,6 @@
-﻿namespace P2PSite.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace P2PSite.Models
 {
     public class PurchaseRequest
     {
@@ -18,13 +20,25 @@
         public DateTime CreatedAt { get; set; }
         public string CompanyId { get; set; } = string.Empty;
         public string CompanyName { get; set;} = string.Empty;
-        public Material[] Materials { get; set; }
+        public MaterialPreview[] Materials { get; set; }
     }
 
-    public class Material
+    public class MaterialPreview
     {
         public int MaterialCode { get; set; }
         public string MaterialName { get; set; }
         public float Quantity { get; set; }
+    }
+
+    public class Material
+    {
+        public int Id { get; set; }
+        public int MaterialCode { get; set; }
+        public string MaterialName { get; set; } = string.Empty;
+        public string Brand { get; set; } = string.Empty;
+        public string Dimensions { get; set; } = string.Empty;
+        public string Category { get; set; } = string.Empty;
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
     }
 }

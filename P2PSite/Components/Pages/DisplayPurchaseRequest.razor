@@ -2,6 +2,8 @@
 @using P2PSite.Components.Shared
 @rendermode InteractiveServer
 @inject IHttpClientFactory ClientFactory
+@inject NavigationManager Navigation
+@inject IJSRuntime JSRuntime
 
 @if (purchaseRequest is null)
 {
@@ -61,10 +63,7 @@ else
         </tbody>
     </table>
 
-    @if (OpenModal)
-    {
-        <Modal @ref="CenterModal" />
-    }
+    <Modal @ref="MaterialModal" OnClose="OnModalClose"/>
 }
 
 @code {
@@ -74,8 +73,7 @@ else
     OnePurchaseRequest? purchaseRequest;
     string? errorMessage;
 
-    public Modal? CenterModal { get; set; }
-    public bool OpenModal { get; set; }
+    public Modal? MaterialModal { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -91,8 +89,14 @@ else
         }
     }
 
-    public void ShowMaterialModal()
+    public async void ShowMaterialModal()
     {
-        OpenModal = true;
+        MaterialModal?.Show();
+        await JSRuntime.InvokeVoidAsync("updateUrl", "/purchaserequest/purchaseId/material/123");
+    }
+
+    private void OnModalClose()
+    {
+        System.Diagnostics.Debug.WriteLine("Modal has been closed.");
     }
 }

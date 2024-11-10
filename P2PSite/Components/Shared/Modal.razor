@@ -1,5 +1,39 @@
-﻿<h3>Modal</h3>
+﻿@inject IHttpClientFactory ClientFactory
+
+@if (MaterialModalOpen)
+{
+    <div>
+        <button @onclick="Close"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+}
 
 @code {
+    [Parameter]
+    public EventCallback OnClose { get; set; }
 
+    Material? material;
+    string? errorMessage;
+    private bool MaterialModalOpen;
+
+    // protected override async Task OnInitializedAsync()
+    // {
+    //     var client = ClientFactory.CreateClient("WebAPI");
+    //     try
+    //     {
+    //         material = await client.GetFromJsonAsync<Material>($"/api/purchaserequestmaterials/{purchaseRequestId}/material{materialCode}");
+    //         errorMessage = null;
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         errorMessage = $"There was an error getting the purchase requests: {ex.Message}";
+    //     }
+    // }
+
+    public void Show() => MaterialModalOpen = true;
+
+    private void Close()
+    {
+        OnClose.InvokeAsync(null);
+        MaterialModalOpen = false;
+    }
 }
