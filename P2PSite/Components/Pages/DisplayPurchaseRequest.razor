@@ -1,4 +1,6 @@
 ﻿@page "/purchaserequest/{purchaseId:int}"
+@using P2PSite.Components.Shared
+@rendermode InteractiveServer
 @inject IHttpClientFactory ClientFactory
 
 @if (purchaseRequest is null)
@@ -49,7 +51,7 @@ else
                     <td>@material.MaterialName</td>
                     <td>@material.Quantity</td>
                     <td>
-                        <div type="button" class="text-center">
+                        <div type="button" class="text-center" @onclick="ShowMaterialModal">
                             <i class="fa-solid fa-bars"></i>
                         </div>
                     </td>
@@ -58,6 +60,11 @@ else
             }
         </tbody>
     </table>
+
+    @if (OpenModal)
+    {
+        <Modal @ref="CenterModal" />
+    }
 }
 
 @code {
@@ -66,6 +73,9 @@ else
 
     OnePurchaseRequest? purchaseRequest;
     string? errorMessage;
+
+    public Modal? CenterModal { get; set; }
+    public bool OpenModal { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -79,5 +89,10 @@ else
         {
             errorMessage = $"There was an error getting the purchase requests: {ex.Message}";
         }
+    }
+
+    public void ShowMaterialModal()
+    {
+        OpenModal = true;
     }
 }
