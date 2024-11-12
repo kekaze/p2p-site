@@ -5,29 +5,37 @@
     <div>
         <button @onclick="Close"><i class="fa-solid fa-xmark"></i></button>
     </div>
+    <ul>
+        <li>@PurchaseId</li>
+        <li>@MaterialCode</li>
+    </ul>
 }
 
 @code {
     [Parameter]
     public EventCallback OnClose { get; set; }
+    [Parameter]
+    public int PurchaseId { get; set; }
+    [Parameter]
+    public int MaterialCode { get; set; }
 
     Material? material;
     string? errorMessage;
     private bool MaterialModalOpen;
 
-    // protected override async Task OnInitializedAsync()
-    // {
-    //     var client = ClientFactory.CreateClient("WebAPI");
-    //     try
-    //     {
-    //         material = await client.GetFromJsonAsync<Material>($"/api/purchaserequestmaterials/{purchaseRequestId}/material{materialCode}");
-    //         errorMessage = null;
-    //     }
-    //     catch (Exception ex)
-    //     {
-    //         errorMessage = $"There was an error getting the purchase requests: {ex.Message}";
-    //     }
-    // }
+    protected override async Task OnInitializedAsync()
+    {
+        var client = ClientFactory.CreateClient("WebAPI");
+        try
+        {
+            material = await client.GetFromJsonAsync<Material>($"/api/purchaserequestmaterials/{PurchaseId}/material{MaterialCode}");
+            errorMessage = null;
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"There was an error getting the purchase requests: {ex.Message}";
+        }
+    }
 
     public void Show() => MaterialModalOpen = true;
 

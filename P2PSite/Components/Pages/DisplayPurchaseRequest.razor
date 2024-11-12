@@ -53,7 +53,7 @@ else
                     <td>@material.MaterialName</td>
                     <td>@material.Quantity</td>
                     <td>
-                        <div type="button" class="text-center" @onclick="ShowMaterialModal">
+                        <div type="button" class="text-center" @onclick="() => ShowMaterialModal(material.MaterialCode)">
                             <i class="fa-solid fa-bars"></i>
                         </div>
                     </td>
@@ -63,12 +63,13 @@ else
         </tbody>
     </table>
 
-    <Modal @ref="MaterialModal" OnClose="OnModalClose"/>
+    <Modal @ref="MaterialModal" PurchaseID="@purchaseId" MaterialCode="@materialId" OnClose="OnModalClose" />
 }
 
 @code {
     [Parameter]
     public int purchaseId { get; set; }
+    public int materialId { get; set; }
 
     OnePurchaseRequest? purchaseRequest;
     string? errorMessage;
@@ -89,10 +90,11 @@ else
         }
     }
 
-    public async void ShowMaterialModal()
+    public async void ShowMaterialModal(int materialCode)
     {
         MaterialModal?.Show();
-        await JSRuntime.InvokeVoidAsync("updateUrl", "/purchaserequest/purchaseId/material/123");
+        materialId = materialCode;
+        await JSRuntime.InvokeVoidAsync("updateUrl", $"/purchaserequest/{purchaseId}/material/{materialCode}");
     }
 
     private void OnModalClose()
