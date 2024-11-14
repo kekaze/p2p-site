@@ -63,7 +63,7 @@ else
         </tbody>
     </table>
 
-    <Modal @ref="MaterialModal" PurchaseID="@purchaseId" MaterialCode="@materialId" OnClose="OnModalClose" />
+    <Modal @ref="MaterialModal" PurchaseID="@purchaseId" OnClose="OnModalClose" />
 }
 
 @code {
@@ -92,13 +92,13 @@ else
 
     public async void ShowMaterialModal(int materialCode)
     {
-        MaterialModal?.Show();
-        materialId = materialCode;
+        MaterialModal?.Show(materialCode);
         await JSRuntime.InvokeVoidAsync("updateUrl", $"/purchaserequest/{purchaseId}/material/{materialCode}");
     }
 
-    private void OnModalClose()
+    private async void OnModalClose()
     {
         System.Diagnostics.Debug.WriteLine("Modal has been closed.");
+        await JSRuntime.InvokeVoidAsync("updateUrl", $"/purchaserequest/{purchaseId}");
     }
 }

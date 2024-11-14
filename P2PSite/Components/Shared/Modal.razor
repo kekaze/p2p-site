@@ -2,13 +2,44 @@
 
 @if (MaterialModalOpen)
 {
-    <div>
-        <button @onclick="Close"><i class="fa-solid fa-xmark"></i></button>
-    </div>
-    <ul>
-        <li>@PurchaseId</li>
-        <li>@MaterialCode</li>
-    </ul>
+    @if (purchaseRequestMaterial is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else if (string.IsNullOrEmpty(errorMessage) == false)
+    {
+        <p><em>@errorMessage</em></p>
+    }
+    else
+    {
+        <div class="modal fade show" tabindex="-1" role="dialog" style="display: block;">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div>
+                        <button class="btn-close" @onclick="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <label for="material_brand">Brand</label>
+                        <input type="text" value="@purchaseRequestMaterial.Material.Brand" name="material_brand" disabled />
+                        <label for="material_code">Material Code</label>
+                        <input type="text" value="@purchaseRequestMaterial.Material.MaterialCode" name="material_code" disabled />
+                        <label for="material_name">Material Name</label>
+                        <input type="text" value="@purchaseRequestMaterial.Material.MaterialName" name="material_name" disabled />
+                        <label for="dimensions">Dimensions</label>
+                        <input type="text" value="@purchaseRequestMaterial.Material.Dimensions" name="dimensions" disabled />
+                        <label for="category">Category</label>
+                        <input type="text" value="@purchaseRequestMaterial.Material.Category" name="category" disabled />
+                        <label for="quantity">Quantity</label>
+                        <input type="text" value="@purchaseRequestMaterial.Quantity" name="quantity" disabled />
+                    </div>
+                    <div class="modal-footer">
+                        <button @onclick="Close">Close</button>
+                        @* <button @onclick="Submit">Submit</button> *@
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
 }
 
 @code {
@@ -16,28 +47,45 @@
     public EventCallback OnClose { get; set; }
     [Parameter]
     public int PurchaseId { get; set; }
-    [Parameter]
+
     public int MaterialCode { get; set; }
 
-    Material? material;
+    PurchaseRequestMaterial? purchaseRequestMaterial;
     string? errorMessage;
     private bool MaterialModalOpen;
 
-    protected override async Task OnInitializedAsync()
+    // protected override async Task OnInitializedAsync()
+    // {
+    //     var client = ClientFactory.CreateClient("WebAPI");
+    //     try
+    //     {
+
+    //         purchaseRequestMaterial = await client.GetFromJsonAsync<PurchaseRequestMaterial>($"/api/purchaserequests/{PurchaseId}/material/{MaterialCode}");
+    //         errorMessage = null;
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         errorMessage = $"There was an error getting the purchase requests: {ex.Message}";
+    //     }
+    // }
+
+    public async Task Show(int materialCode)
     {
+        MaterialModalOpen = true;
         var client = ClientFactory.CreateClient("WebAPI");
         try
         {
-            material = await client.GetFromJsonAsync<Material>($"/api/purchaserequestmaterials/{PurchaseId}/material{MaterialCode}");
+
+            purchaseRequestMaterial = await client.GetFromJsonAsync<PurchaseRequestMaterial>($"/api/purchaserequests/{PurchaseId}/material/{materialCode}");
             errorMessage = null;
         }
         catch (Exception ex)
         {
             errorMessage = $"There was an error getting the purchase requests: {ex.Message}";
         }
-    }
 
-    public void Show() => MaterialModalOpen = true;
+        StateHasChanged();
+    }
 
     private void Close()
     {
